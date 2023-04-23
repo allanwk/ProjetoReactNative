@@ -10,7 +10,8 @@ export default function Button(props) {
         <TouchableOpacity onPress={props.onPress} style={{
             backgroundColor: color,
             paddingVertical: 10,
-            paddingHorizontal: 20
+            paddingHorizontal: 15,
+            width: props.width ? props.width : 'auto'
         }}>
             <Text style={{ textAlign: 'center' }}>{props.text}</Text>
         </TouchableOpacity>

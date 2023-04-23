@@ -1,9 +1,9 @@
-import { View, Text, TextInput, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, Modal } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import RadioButtonGroup from '../components/RadioButtonGroup';
 import DatePicker from '../components/DatePicker';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { saveVaccine } from '../util/db';
+import { saveVaccine, deleteVaccine } from '../util/db';
 import Button from '../components/Button';
 import { CommonActions } from '@react-navigation/native';
 
@@ -14,6 +14,7 @@ export default function Vacina(props) {
     const [image, setImage] = useState(null);
     const [dose, setDose] = useState(null);
     const [id, setId] = useState(null);
+    const [deleteDialog, setDeleteDialog] = useState(false);
 
     function parseLocaleDateString(dateString) {
         return dateString ? new Date(dateString.split('/').reverse().join('-') + 'T00:00:00') : null
@@ -33,8 +34,8 @@ export default function Vacina(props) {
 
     function handleSaveVaccine() {
         const vaccine = {
-            dataVacinacao: dataVacinacao.toLocaleDateString('pt-BR'),
-            proximaVacinacao: proximaVacinacao.toLocaleDateString('pt-BR'),
+            dataVacinacao: dataVacinacao ? dataVacinacao.toLocaleDateString('pt-BR') : null,
+            proximaVacinacao: proximaVacinacao ? proximaVacinacao.toLocaleDateString('pt-BR') : null,
             nomeVacina,
             image,
             dose
@@ -49,6 +50,10 @@ export default function Vacina(props) {
         }
 
         saveVaccine(vaccine);
+        navigateToHome();
+    }
+
+    function navigateToHome() {
         props.navigation.dispatch(
             CommonActions.reset({
                 index: 0,
@@ -59,7 +64,14 @@ export default function Vacina(props) {
         );
     }
 
-    function callback(resp) {
+    function confirmDeleteVaccine() {
+        if (id != null) {
+            deleteVaccine(id);
+            navigateToHome();
+        }
+    }
+
+    function imagePickerCallback(resp) {
         if (resp && resp.assets && resp.assets.length) {
             setImage(resp.assets[0].uri);
         }
@@ -70,7 +82,7 @@ export default function Vacina(props) {
             selectionLimit: 1,
             mediaType: 'photo',
             includeBase64: false,
-        }, callback);
+        }, imagePickerCallback);
     };
 
     return (
@@ -112,12 +124,28 @@ export default function Vacina(props) {
                 {id != null ?
                     <>
                         <Button color='success' text='Salvar alterações' onPress={handleSaveVaccine} />
-                        <Button color='danger' text='Excluir' />
+                        <Button color='danger' text='Excluir' onPress={() => setDeleteDialog(true)} />
                     </>
                     :
                     <Button color='success' text='Cadastrar' onPress={handleSaveVaccine} />
                 }
             </View>
+            <Modal
+                visible={deleteDialog}
+                animationType='fade'
+                transparent={true}
+                onRequestClose={() => setDeleteDialog(false)}
+            >
+                <View style={styles.dialogContainer}>
+                    <View style={styles.deleteDialog}>
+                        <Text style={styles.deleteDialogText}>Tem certeza que deseja remover essa vacina?</Text>
+                        <View style={styles.deleteDialogButtons}>
+                            <Button text="SIM" color="danger" onPress={confirmDeleteVaccine} flex={1} width={110} />
+                            <Button text="CANCELAR" color="action" onPress={() => setDeleteDialog(false)} width={110} />
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     )
 }
@@ -162,5 +190,27 @@ const styles = StyleSheet.create({
         color: '#419ED7',
         height: 40,
         padding: 0,
+    },
+    dialogContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    deleteDialog: {
+        width: 300,
+        borderColor: '#B9DFDB',
+        borderWidth: 2,
+        backgroundColor: 'white',
+        padding: 10
+    },
+    deleteDialogText: {
+        color: '#FD7979',
+        textAlign: 'center'
+    },
+    deleteDialogButtons: {
+        marginTop: 10,
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        paddingHorizontal: 20
     }
 })

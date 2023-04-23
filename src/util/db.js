@@ -25,8 +25,18 @@ const saveVaccine = (vaccine) => {
     }
 }
 
+const deleteVaccine = (vaccine_id) => {
+    if (vaccine_id != null) {
+        const vaccines = users.find(user => user.email === loggedInUserEmail).vaccines;
+        const index = vaccines.findIndex(v => parseInt(v.id) === parseInt(vaccine_id));
+        if (index !== -1) {
+            vaccines.splice(index, 1);
+        }
+    }
+}
+
 const getVaccines = () => {
     return users.find(user => user.email === loggedInUserEmail).vaccines;
 }
 
-module.exports = { loginUser, saveVaccine, getVaccines };
+module.exports = { loginUser, saveVaccine, getVaccines, deleteVaccine };
