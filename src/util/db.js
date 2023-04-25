@@ -39,4 +39,8 @@ const getVaccines = () => {
     return users.find(user => user.email === loggedInUserEmail).vaccines;
 }
 
-module.exports = { loginUser, saveVaccine, getVaccines, deleteVaccine };
+const getCurrentUserEmail = () => {
+    return loggedInUserEmail;
+}
+
+module.exports = { loginUser, saveVaccine, getVaccines, deleteVaccine, getCurrentUserEmail };
