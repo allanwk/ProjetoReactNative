@@ -1,7 +1,7 @@
 import { View, Text, TextInput, StyleSheet, Image, FlatList, SafeAreaView } from 'react-native';
 import Button from '../components/Button';
 import VaccineCard from '../components/VaccineCard';
-import { CommonActions } from '@react-navigation/native';
+import { StackActions } from '@react-navigation/native';
 import { getVaccines } from '../util/db';
 import React, { useState, useEffect } from 'react';
 
@@ -9,14 +9,7 @@ export default function Home(props) {
     const [vaccines, setVaccines] = useState([]);
 
     function navigateToVaccineScreen() {
-        props.navigation.dispatch(
-            CommonActions.reset({
-                index: 0,
-                routes: [
-                    { name: 'Vacina' },
-                ],
-            })
-        );
+        props.navigation.navigate('Vacina');
     }
 
     function openVaccine(vaccine) {

@@ -35,6 +35,23 @@ const deleteVaccine = (vaccine_id) => {
     }
 }
 
+const getNextVaccines = () => {
+    let vaccines = [...users.find(user => user.email === loggedInUserEmail).vaccines];
+    vaccines = vaccines.filter(v => v.proximaVacinacao != null);
+    vaccines.sort((a, b) => {
+        const date_a = new Date(a.proximaVacinacao.split('/').reverse().join('-') + 'T00:00:00')
+        const date_b = new Date(b.proximaVacinacao.split('/').reverse().join('-') + 'T00:00:00')
+        if (date_a > date_b) {
+            return 1;
+        } else if (date_a < date_b) {
+            return -1;
+        }
+        return 0;
+    })
+    console.log(vaccines);
+    return vaccines;
+}
+
 const getVaccines = () => {
     return users.find(user => user.email === loggedInUserEmail).vaccines;
 }
@@ -43,4 +60,4 @@ const getCurrentUserEmail = () => {
     return loggedInUserEmail;
 }
 
-module.exports = { loginUser, saveVaccine, getVaccines, deleteVaccine, getCurrentUserEmail };
+module.exports = { loginUser, saveVaccine, getVaccines, deleteVaccine, getCurrentUserEmail, getNextVaccines };
