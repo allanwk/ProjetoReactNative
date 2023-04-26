@@ -15,6 +15,7 @@ import LinearGradient from 'react-native-linear-gradient';
 export default function Inicial(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const handleEmailChange = (text) => {
         setEmail(text);
@@ -25,9 +26,15 @@ export default function Inicial(props) {
     };
 
     const handleLogin = () => {
-        if (loginUser(email, password)) {
-            props.navigation.push("Drawer");
-        };
+        const error = loginUser(email, password);
+        if (error) {
+            return setErrorMessage(error);
+        }
+        props.navigation.navigate("Drawer");
+    }
+
+    const navigateToRegister = () => {
+        props.navigation.navigate("Register");
     }
 
     return (
@@ -68,10 +75,16 @@ export default function Inicial(props) {
                                 secureTextEntry={true}
                             />
                         </View>
+                        {errorMessage ?
+                            <View style={styles.formRow}>
+                                <Text style={styles.formLabel}></Text>
+                                <Text style={styles.errorText}>{errorMessage}</Text>
+                            </View> : null
+                        }
                     </View>
                     <View style={styles.buttonsContainer}>
                         <Button color='success' text='Entrar' onPress={handleLogin} />
-                        <Button color='action' text='Criar minha conta' />
+                        <Button color='action' text='Criar minha conta' onPress={navigateToRegister} />
                         <Button text='Esqueci minha senha' />
                     </View>
                 </View>
@@ -115,6 +128,7 @@ const styles = StyleSheet.create({
         marginRight: 20,
         fontSize: 16,
         color: 'white',
+        textAlign: 'right'
     },
     formInput: {
         flex: 1,
@@ -147,5 +161,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#B0CCDE',
         paddingVertical: 10,
         paddingHorizontal: 20
+    },
+    errorText: {
+        color: '#FD7979'
     }
 });

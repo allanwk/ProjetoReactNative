@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
         marginRight: 20,
         fontSize: 16,
         color: 'white',
+        textAlign: 'right'
     },
     formInput: {
         flex: 1,

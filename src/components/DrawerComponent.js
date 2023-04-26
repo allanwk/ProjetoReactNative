@@ -1,10 +1,20 @@
 import { DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import { View, Text, StyleSheet, Image } from 'react-native'
-import { getCurrentUserEmail } from '../util/db';
+import { getCurrentUserEmail, logOut } from '../util/db';
+import { StackActions, CommonActions } from '@react-navigation/native';
 
 const CustomComponent = (props) => {
     function currentUserName() {
-        return getCurrentUserEmail().split(".")[0];
+        return getCurrentUserEmail() ? getCurrentUserEmail().split(".")[0] : null;
+    }
+
+    function navigateToLogin() {
+        props.navigation.dispatch(CommonActions.reset({
+            index: 0,
+            routes: [
+                { name: 'Inicial' }
+            ]
+        }))
     }
 
     return (
@@ -15,7 +25,8 @@ const CustomComponent = (props) => {
             </View>
             <DrawerItemList {...props} />
             <DrawerItem label="Sair" onPress={() => {
-                props.navigation.navigate("Inicial")
+                logOut();
+                navigateToLogin();
             }}
                 icon={() => <Image source={require('../assets/sair.png')} style={{ width: 20, height: 20 }} />}
                 labelStyle={{ marginLeft: -25, color: '#419ED7' }}

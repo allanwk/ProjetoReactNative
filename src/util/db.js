@@ -7,10 +7,22 @@ const users = [
 
 const loginUser = (email, password) => {
     const user = users.find(user => user.email === email && user.password === password);
-    if (user) {
-        logged_in_user_email = user.email;
+    if (!user) {
+        return "E-mail e/ou senha inválidos."
     }
-    return user != null;
+    loggedInUserEmail = user.email;
+}
+
+const registerUser = (newUser) => {
+    if (users.find(user => user.email === newUser.email)) {
+        return "E-mail já utilizado!";
+    }
+    users.push(newUser);
+    loginUser(newUser.email, newUser.password);
+}
+
+const logOut = () => {
+    loggedInUserEmail = null;
 }
 
 const saveVaccine = (vaccine) => {
@@ -60,4 +72,4 @@ const getCurrentUserEmail = () => {
     return loggedInUserEmail;
 }
 
-module.exports = { loginUser, saveVaccine, getVaccines, deleteVaccine, getCurrentUserEmail, getNextVaccines };
+module.exports = { loginUser, saveVaccine, getVaccines, deleteVaccine, getCurrentUserEmail, getNextVaccines, registerUser, logOut };
