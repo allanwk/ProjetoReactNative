@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 
 export default function Home(props) {
     const [vaccines, setVaccines] = useState([]);
+    const [search, setSearch] = useState(null);
 
     function navigateToVaccineScreen() {
         props.navigation.navigate('Vacina');
@@ -25,7 +26,9 @@ export default function Home(props) {
             <View style={styles.searchContainer}>
                 <Image source={require('../assets/search.png')} style={styles.icon} />
                 <TextInput
-                    style={styles.formInput}
+                    style={styles.searchInput}
+                    value={search}
+                    onChangeText={setSearch}
                     placeholder="PESQUISAR VACINA..."
                     placeholderTextColor="#8B8B8B"
                 />
@@ -34,7 +37,7 @@ export default function Home(props) {
                 <FlatList
                     columnWrapperStyle={{ flex: 1, justifyContent: 'center' }}
                     numColumns={2}
-                    data={vaccines}
+                    data={vaccines.filter(v => search == null || search.length === 0 || v.nomeVacina.toLowerCase().includes(search.toLowerCase()))}
                     renderItem={({ item }) =>
                         <VaccineCard key={item.id} vaccine={item} onPress={() => openVaccine(item)} />
                     }
@@ -47,8 +50,9 @@ export default function Home(props) {
 }
 
 const styles = StyleSheet.create({
-    formInput: {
+    searchInput: {
         flex: 1,
+        color: '#8B8B8B'
     },
     icon: {
         width: 20,

@@ -1,9 +1,9 @@
 import { View, Text, TextInput, StyleSheet, Image, Modal } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from '../components/DatePicker';
 import RadioButtonGroup from '../components/RadioButtonGroup';
 import Button from '../components/Button';
-import { registerUser } from '../util/db';
+import { registerUser, updateUser } from '../util/db';
 
 export default function Register(props) {
     const [name, setName] = useState("");
@@ -13,17 +13,43 @@ export default function Register(props) {
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState(null);
+    const [vaccines, setVaccines] = useState([]);
+    const [id, setId] = useState(null);
+
+    function parseLocaleDateString(dateString) {
+        return dateString ? new Date(dateString.split('/').reverse().join('-') + 'T00:00:00') : null
+    }
+
+    useEffect(() => {
+        const { params } = props.route;
+        if (params) {
+            setName(params.name);
+            setSex(params.sex);
+            setBirthDate(params.birthDate ? parseLocaleDateString(params.birthDate) : new Date())
+            setEmail(params.email);
+            setVaccines(params.vaccines);
+            setId(params.id);
+        }
+    }, [props.route]);
 
     function register() {
         if (password !== repeatPassword) {
             return setErrorMessage("Senha não confere!");
         }
-        const error = registerUser({ name, sex, birthDate, email, password });
+        const user = { name, sex, birthDate: birthDate ? birthDate.toLocaleDateString('pt-BR') : null, email, password, vaccines };
+        let error;
+        if (id != null) {
+            user.id = id;
+            error = updateUser(user);
+        } else {
+            error = registerUser(user);
+        }
+
         if (error) {
             return setErrorMessage(error);
         }
 
-        props.navigation.navigate('Drawer');
+        id == null ? props.navigation.navigate('Drawer') : props.navigation.navigate('Inicial');
     }
 
     return (
@@ -109,11 +135,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         backgroundColor: 'white',
         color: '#419ED7'
-    },
-    icon: {
-        width: 20,
-        height: 20,
-        opacity: 0.4,
     },
     datePickerContainer: {
         flexDirection: 'row',

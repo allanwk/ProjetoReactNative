@@ -12,7 +12,7 @@ export default function Vacina(props) {
     const [proximaVacinacao, setProximaVacinacao] = useState(new Date());
     const [nomeVacina, setNomeVacina] = useState("");
     const [image, setImage] = useState(null);
-    const [dose, setDose] = useState(null);
+    const [dose, setDose] = useState(0);
     const [id, setId] = useState(null);
     const [deleteDialog, setDeleteDialog] = useState(false);
 
@@ -23,8 +23,8 @@ export default function Vacina(props) {
     useEffect(() => {
         const { params } = props.route;
         if (params) {
-            setDataVacinacao(parseLocaleDateString(params.dataVacinacao));
-            setProximaVacinacao(parseLocaleDateString(params.proximaVacinacao));
+            setDataVacinacao(params.dataVacinacao ? parseLocaleDateString(params.dataVacinacao) : new Date());
+            setProximaVacinacao(params.proximaVacinacao ? parseLocaleDateString(params.proximaVacinacao) : new Date());
             setNomeVacina(params.nomeVacina);
             setImage(params.image);
             setDose(params.dose);

@@ -37,6 +37,10 @@ export default function Inicial(props) {
         props.navigation.navigate("Register");
     }
 
+    const navigateToForgotPassword = () => {
+        props.navigation.navigate("ForgotPassword");
+    }
+
     return (
         <ImageBackground source={require('../assets/background.jpg')} style={{ flex: 1 }}>
             <LinearGradient
@@ -85,7 +89,7 @@ export default function Inicial(props) {
                     <View style={styles.buttonsContainer}>
                         <Button color='success' text='Entrar' onPress={handleLogin} />
                         <Button color='action' text='Criar minha conta' onPress={navigateToRegister} />
-                        <Button text='Esqueci minha senha' />
+                        <Button text='Esqueci minha senha' onPress={navigateToForgotPassword} />
                     </View>
                 </View>
             </LinearGradient>

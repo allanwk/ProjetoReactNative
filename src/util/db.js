@@ -2,7 +2,7 @@ let loggedInUserEmail = 'allan';
 let nextId = 0;
 
 const users = [
-    { email: 'allan', password: '123', vaccines: [] }
+    { email: 'allan', password: '123', vaccines: [], id: 0 }
 ];
 
 const loginUser = (email, password) => {
@@ -11,6 +11,15 @@ const loginUser = (email, password) => {
         return "E-mail e/ou senha inválidos."
     }
     loggedInUserEmail = user.email;
+}
+
+const getUser = (email) => {
+    return users.find(user => user.email === email);
+}
+
+const updateUser = (updatedUser) => {
+    const index = users.findIndex(u => parseInt(u.id) === parseInt(updatedUser.id));
+    users[index] = { ...updatedUser };
 }
 
 const registerUser = (newUser) => {
@@ -60,7 +69,6 @@ const getNextVaccines = () => {
         }
         return 0;
     })
-    console.log(vaccines);
     return vaccines;
 }
 
@@ -72,4 +80,4 @@ const getCurrentUserEmail = () => {
     return loggedInUserEmail;
 }
 
-module.exports = { loginUser, saveVaccine, getVaccines, deleteVaccine, getCurrentUserEmail, getNextVaccines, registerUser, logOut };
+module.exports = { loginUser, saveVaccine, getVaccines, deleteVaccine, getCurrentUserEmail, getNextVaccines, registerUser, logOut, getUser, updateUser };

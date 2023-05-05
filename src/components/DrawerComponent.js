@@ -20,7 +20,7 @@ const CustomComponent = (props) => {
     return (
         <DrawerContentScrollView style={styles.drawer}>
             <View style={{ alignItems: 'center' }}>
-                <Text style={{ color: '#419ED7', alignSelf: 'center', marginTop: 50 }}>{currentUserName()}</Text>
+                <Text style={{ color: '#419ED7', alignSelf: 'center', marginTop: 50 }}>{"Olá " + currentUserName()}</Text>
                 <View style={styles.separator} />
             </View>
             <DrawerItemList {...props} />
