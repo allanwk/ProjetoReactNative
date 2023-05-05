@@ -124,7 +124,8 @@ const styles = StyleSheet.create({
         marginRight: 20,
         fontSize: 16,
         color: 'white',
-        textAlign: 'right'
+        textAlign: 'right',
+        fontFamily: 'AveriaLibre-Regular'
     },
     formInput: {
         flex: 1,
@@ -134,7 +135,8 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         fontSize: 16,
         backgroundColor: 'white',
-        color: '#419ED7'
+        color: '#419ED7',
+        fontFamily: 'AveriaLibre-Regular'
     },
     datePickerContainer: {
         flexDirection: 'row',
@@ -148,6 +150,7 @@ const styles = StyleSheet.create({
         padding: 0,
     },
     errorText: {
-        color: '#FD7979'
+        color: '#FD7979',
+        fontFamily: 'AveriaLibre-Regular'
     }
 })

@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 40,
         fontSize: 16,
-        color: '#419ED7'
+        color: '#419ED7',
+        fontFamily: 'AveriaLibre-Regular'
     },
 })

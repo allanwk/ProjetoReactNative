@@ -15,7 +15,7 @@ const vaccineIcon = () => (
 const Navigation = () => {
     return (
         <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#C1E7E3' }, headerTintColor: '#419ED7' }}>
+            <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: '#C1E7E3' }, headerTitleStyle: { fontFamily: 'AveriaLibre-Regular' }, headerTintColor: '#419ED7' }}>
                 <Stack.Screen name="Inicial" component={Inicial} options={{ headerShown: false }} />
                 <Stack.Screen name="Register" component={Register} options={{ headerLeft: vaccineIcon, headerTitle: "MyHealth" }} />
                 <Stack.Screen name="ForgotPassword" component={ForgotPassword} options={{ headerLeft: vaccineIcon, headerTitle: "MyHealth" }} />

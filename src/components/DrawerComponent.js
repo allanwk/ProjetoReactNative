@@ -20,7 +20,7 @@ const CustomComponent = (props) => {
     return (
         <DrawerContentScrollView style={styles.drawer}>
             <View style={{ alignItems: 'center' }}>
-                <Text style={{ color: '#419ED7', alignSelf: 'center', marginTop: 50 }}>{"Olá " + currentUserName()}</Text>
+                <Text style={{ color: '#419ED7', alignSelf: 'center', marginTop: 50, fontFamily: 'AveriaLibre-Regular' }}>{"Olá " + currentUserName()}</Text>
                 <View style={styles.separator} />
             </View>
             <DrawerItemList {...props} />
@@ -29,7 +29,7 @@ const CustomComponent = (props) => {
                 navigateToLogin();
             }}
                 icon={() => <Image source={require('../assets/sair.png')} style={{ width: 20, height: 20 }} />}
-                labelStyle={{ marginLeft: -25, color: '#419ED7' }}
+                labelStyle={{ marginLeft: -25, color: '#419ED7', fontFamily: 'AveriaLibre-Regular' }}
             />
         </DrawerContentScrollView>
     )

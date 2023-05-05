@@ -13,7 +13,7 @@ export default function Button(props) {
             paddingHorizontal: 15,
             width: props.width ? props.width : 'auto'
         }}>
-            <Text style={{ textAlign: 'center' }}>{props.text}</Text>
+            <Text style={{ textAlign: 'center', fontFamily: 'AveriaLibre-Regular', }}>{props.text}</Text>
         </TouchableOpacity>
     )
 }

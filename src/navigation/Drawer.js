@@ -8,7 +8,11 @@ const Drawer = createDrawerNavigator()
 
 const MyDrawer = (props) => {
     return (
-        <Drawer.Navigator drawerContent={(props) => <DrawerComponent {...props} />} screenOptions={{ drawerLabelStyle: { color: '#419ED7', marginLeft: -25 }, headerStyle: { backgroundColor: '#C1E7E3' }, headerTintColor: '#419ED7', unmountOnBlur: true }}>
+        <Drawer.Navigator drawerContent={(props) => <DrawerComponent {...props} />} screenOptions={{
+            drawerLabelStyle: { color: '#419ED7', marginLeft: -25, fontFamily: 'AveriaLibre-Regular' }, headerStyle: { backgroundColor: '#C1E7E3' }, headerTintColor: '#419ED7', headerTitleStyle: {
+                fontFamily: 'AveriaLibre-Regular'
+            }, unmountOnBlur: true
+        }}>
             <Drawer.Screen name="HomeStack" component={HomeStack} options={{
                 drawerIcon: () => <Image source={require('../assets/vacina.png')} style={{ width: 20, height: 20 }} />,
                 title: "Minhas vacinas"
@@ -17,7 +21,7 @@ const MyDrawer = (props) => {
                 drawerIcon: () => <Image source={require('../assets/calendar.png')} style={{ width: 20, height: 20 }} />,
                 title: "Próximas vacinas"
             }} />
-        </Drawer.Navigator>
+        </Drawer.Navigator >
     )
 }
 

@@ -8,12 +8,12 @@ export default function RadioButtonGroup(props) {
                 {props.checked == key ?
                     <TouchableOpacity style={styles.btn}>
                         <Image style={styles.img} source={require("../assets/radio_selecionado.png")} />
-                        <Text>{data}</Text>
+                        <Text style={{ fontFamily: 'AveriaLibre-Regular' }}>{data}</Text>
                     </TouchableOpacity>
                     :
                     <TouchableOpacity onPress={() => { props.setChecked(key) }} style={styles.btn}>
                         <Image style={styles.img} source={require("../assets/radio_vazio.png")} />
-                        <Text>{data}</Text>
+                        <Text style={{ fontFamily: 'AveriaLibre-Regular' }}>{data}</Text>
                     </TouchableOpacity>
                 }
             </View>

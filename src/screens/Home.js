@@ -52,7 +52,8 @@ export default function Home(props) {
 const styles = StyleSheet.create({
     searchInput: {
         flex: 1,
-        color: '#8B8B8B'
+        color: '#8B8B8B',
+        fontFamily: 'AveriaLibre-Regular',
     },
     icon: {
         width: 20,

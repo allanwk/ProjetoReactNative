@@ -33,7 +33,8 @@ const styles = StyleSheet.create({
         color: '#3F92C5',
         textAlign: 'center',
         fontWeight: 400,
-        fontSize: 24
+        fontSize: 24,
+        fontFamily: 'AveriaLibre-Regular',
     },
     dose: {
         color: 'white',
@@ -41,13 +42,16 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: 400,
         fontSize: 16,
-        padding: 5
+        padding: 5,
+        fontFamily: 'AveriaLibre-Regular',
     },
     date: {
         color: '#8B8B8B',
-        textAlign: 'center'
+        textAlign: 'center',
+        fontFamily: 'AveriaLibre-Regular',
     },
     nextDoseWarning: {
         color: '#FD7979',
+        fontFamily: 'AveriaLibre-Regular',
     }
 })

@@ -31,6 +31,9 @@ export default function Inicial(props) {
             return setErrorMessage(error);
         }
         props.navigation.navigate("Drawer");
+        setEmail('');
+        setPassword('');
+        setErrorMessage(null);
     }
 
     const navigateToRegister = () => {
@@ -100,7 +103,7 @@ export default function Inicial(props) {
 const styles = StyleSheet.create({
     logoText: {
         color: '#419ED7',
-        fontFamily: 'Averia Libre',
+        fontFamily: 'AveriaLibre-Regular',
         fontStyle: 'normal',
         fontWeight: 400,
         fontSize: 50,
@@ -113,7 +116,7 @@ const styles = StyleSheet.create({
     },
     subText: {
         color: '#419ED7',
-        fontFamily: 'Averia Libre',
+        fontFamily: 'AveriaLibre-Regular',
         fontStyle: 'normal',
         fontWeight: 400,
         fontSize: 25,
@@ -132,7 +135,8 @@ const styles = StyleSheet.create({
         marginRight: 20,
         fontSize: 16,
         color: 'white',
-        textAlign: 'right'
+        textAlign: 'right',
+        fontFamily: 'AveriaLibre-Regular',
     },
     formInput: {
         flex: 1,
@@ -142,7 +146,8 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         fontSize: 16,
         backgroundColor: 'white',
-        color: '#419ED7'
+        color: '#419ED7',
+        fontFamily: 'AveriaLibre-Regular',
     },
     buttonsContainer: {
         display: 'flex',
@@ -167,6 +172,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     },
     errorText: {
-        color: '#FD7979'
+        color: '#FD7979',
+        fontFamily: 'AveriaLibre-Regular'
     }
 });

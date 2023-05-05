@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
         padding: 0,
     },
     errorText: {
-        color: '#FD7979'
+        color: '#FD7979',
+        fontFamily: 'AveriaLibre-Regular'
     }
 })

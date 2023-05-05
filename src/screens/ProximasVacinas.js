@@ -49,9 +49,11 @@ const styles = StyleSheet.create({
         marginBottom: 5
     },
     vaccineName: {
-        color: '#419ED7'
+        color: '#419ED7',
+        fontFamily: 'AveriaLibre-Regular'
     },
     vaccineDate: {
-        color: '#8B8B8B'
+        color: '#8B8B8B',
+        fontFamily: 'AveriaLibre-Regular'
     }
 })
