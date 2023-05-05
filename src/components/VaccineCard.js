@@ -27,7 +27,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 10,
         margin: 5,
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: 5
     },
     title: {
         color: '#3F92C5',
@@ -41,16 +43,18 @@ const styles = StyleSheet.create({
         backgroundColor: '#3F92C5',
         textAlign: 'center',
         fontWeight: 400,
-        fontSize: 16,
+        fontSize: 13,
         padding: 5,
         fontFamily: 'AveriaLibre-Regular',
     },
     date: {
         color: '#8B8B8B',
         textAlign: 'center',
+        fontSize: 13,
         fontFamily: 'AveriaLibre-Regular',
     },
     nextDoseWarning: {
+        fontSize: 11,
         color: '#FD7979',
         fontFamily: 'AveriaLibre-Regular',
     }

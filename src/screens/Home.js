@@ -36,6 +36,7 @@ export default function Home(props) {
             <SafeAreaView style={{ flex: 1 }}>
                 <FlatList
                     columnWrapperStyle={{ flex: 1, justifyContent: 'center' }}
+                    style={{ padding: 10 }}
                     numColumns={2}
                     data={vaccines.filter(v => search == null || search.length === 0 || v.nomeVacina.toLowerCase().includes(search.toLowerCase()))}
                     renderItem={({ item }) =>
