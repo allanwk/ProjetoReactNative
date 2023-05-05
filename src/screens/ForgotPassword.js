@@ -34,8 +34,8 @@ export default function ForgotPassword(props) {
                         <Text style={styles.errorText}>{errorMessage}</Text>
                     </View> : null
                 }
-                <Button text="Recuperar senha" color="success" onPress={recoverPassword} />
             </View>
+            <Button style={{ marginBottom: 40 }} text="Recuperar senha" color="success" onPress={recoverPassword} />
         </View >
     )
 }
@@ -43,6 +43,9 @@ export default function ForgotPassword(props) {
 const styles = StyleSheet.create({
     formContainer: {
         padding: 20,
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center'
     },
     formRow: {
         flexDirection: 'row',

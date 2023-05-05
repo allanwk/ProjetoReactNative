@@ -103,8 +103,8 @@ export default function Register(props) {
                         <Text style={styles.errorText}>{errorMessage}</Text>
                     </View> : null
                 }
-                <Button text="Cadastrar" color="success" onPress={register} />
             </View>
+            <Button style={{ marginBottom: 40 }} text="Cadastrar" color="success" onPress={register} />
         </View >
     )
 }
@@ -112,7 +112,8 @@ export default function Register(props) {
 const styles = StyleSheet.create({
     formContainer: {
         padding: 20,
-        marginTop: 200
+        marginTop: 200,
+        flex: 1
     },
     formRow: {
         flexDirection: 'row',

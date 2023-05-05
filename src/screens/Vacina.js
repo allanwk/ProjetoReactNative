@@ -124,7 +124,7 @@ export default function Vacina(props) {
                 {id != null ?
                     <>
                         <Button color='success' text='Salvar alterações' onPress={handleSaveVaccine} />
-                        <Button color='danger' text='Excluir' onPress={() => setDeleteDialog(true)} />
+                        <Button delete color='danger' text='Excluir' onPress={() => setDeleteDialog(true)} />
                     </>
                     :
                     <Button color='success' text='Cadastrar' onPress={handleSaveVaccine} />
@@ -153,6 +153,7 @@ export default function Vacina(props) {
 const styles = StyleSheet.create({
     formContainer: {
         padding: 20,
+        marginTop: 50
     },
     formRow: {
         flexDirection: 'row',

@@ -45,7 +45,7 @@ export default function Home(props) {
                     keyExtractor={item => item.id}
                 />
             </SafeAreaView>
-            <Button color='success' text='Nova vacina' onPress={navigateToVaccineScreen} />
+            <Button style={{ marginBottom: 40 }} color='success' text='Nova vacina' onPress={navigateToVaccineScreen} />
         </View>
     )
 }

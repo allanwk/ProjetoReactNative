@@ -90,8 +90,8 @@ export default function Inicial(props) {
                         }
                     </View>
                     <View style={styles.buttonsContainer}>
-                        <Button color='success' text='Entrar' onPress={handleLogin} />
-                        <Button color='action' text='Criar minha conta' onPress={navigateToRegister} />
+                        <Button style={{ marginBottom: 20 }} color='success' text='Entrar' onPress={handleLogin} />
+                        <Button style={{ marginBottom: 20 }} color='action' text='Criar minha conta' onPress={navigateToRegister} />
                         <Button text='Esqueci minha senha' onPress={navigateToForgotPassword} />
                     </View>
                 </View>
@@ -153,7 +153,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        flexBasis: '30%',
         justifyContent: 'space-around'
     },
     loginButton: {

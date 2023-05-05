@@ -19,8 +19,8 @@ export default function ProximasVacinas(props) {
     }
 
     return (
-        <View style={{ flex: 1 }}>
-            <SafeAreaView style={{ flex: 1, backgroundColor: '#ADD4D0', padding: 10 }}>
+        <View style={{ flex: 1, backgroundColor: '#ADD4D0' }}>
+            <SafeAreaView style={{ flex: 1, padding: 10 }}>
                 <FlatList
                     contentContainerStyle={{ flexDirection: 'column', alignItems: 'center' }}
                     data={vaccines}
@@ -33,7 +33,7 @@ export default function ProximasVacinas(props) {
                     keyExtractor={item => item.id}
                 />
             </SafeAreaView>
-            <Button color='success' text='Nova vacina' onPress={navigateToVaccineScreen} />
+            <Button style={{ marginBottom: 40 }} color='success' text='Nova vacina' onPress={navigateToVaccineScreen} />
         </View>
     )
 }
@@ -44,13 +44,14 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         minWidth: '100%',
         borderRadius: 10,
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        marginBottom: 5
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        marginBottom: 10
     },
     vaccineName: {
         color: '#419ED7',
-        fontFamily: 'AveriaLibre-Regular'
+        fontFamily: 'AveriaLibre-Regular',
+        fontSize: 20,
     },
     vaccineDate: {
         color: '#8B8B8B',
