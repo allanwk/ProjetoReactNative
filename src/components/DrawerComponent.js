@@ -1,13 +1,9 @@
 import { DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import { View, Text, StyleSheet, Image } from 'react-native'
-import { getCurrentUserEmail, logOut } from '../util/db';
+import { getCurrentUserName, logOut } from '../util/db';
 import { StackActions, CommonActions } from '@react-navigation/native';
 
 const CustomComponent = (props) => {
-    function currentUserName() {
-        return getCurrentUserEmail() ? getCurrentUserEmail().split(".")[0] : null;
-    }
-
     function navigateToLogin() {
         props.navigation.dispatch(CommonActions.reset({
             index: 0,
@@ -20,7 +16,7 @@ const CustomComponent = (props) => {
     return (
         <DrawerContentScrollView style={styles.drawer}>
             <View style={{ alignItems: 'center' }}>
-                <Text style={{ color: '#419ED7', alignSelf: 'center', marginTop: 50, fontFamily: 'AveriaLibre-Regular' }}>{"Olá " + currentUserName()}</Text>
+                <Text style={{ color: '#419ED7', alignSelf: 'center', marginTop: 50, fontFamily: 'AveriaLibre-Regular' }}>{"Olá " + getCurrentUserName()}</Text>
                 <View style={styles.separator} />
             </View>
             <DrawerItemList {...props} />

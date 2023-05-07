@@ -1,11 +1,12 @@
-import { View, Text, TextInput, StyleSheet, Image, Modal } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, Modal, BackHandler } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import RadioButtonGroup from '../components/RadioButtonGroup';
 import DatePicker from '../components/DatePicker';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { saveVaccine, deleteVaccine } from '../util/db';
 import Button from '../components/Button';
-import { CommonActions } from '@react-navigation/native';
+import { CommonActions, useNavigation, useNavigationState } from '@react-navigation/native';
+
 
 export default function Vacina(props) {
     const [dataVacinacao, setDataVacinacao] = useState(new Date());
@@ -16,6 +17,9 @@ export default function Vacina(props) {
     const [id, setId] = useState(null);
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
+
+    const navigation = useNavigation();
+    const routes = useNavigationState((state) => state.routes);
 
     function parseLocaleDateString(dateString) {
         return dateString ? new Date(dateString.split('/').reverse().join('-') + 'T00:00:00') : null
@@ -32,6 +36,28 @@ export default function Vacina(props) {
             setId(params.id);
         }
     }, [props.route]);
+
+    useEffect(() => {
+        const backAction = () => {
+            const previousRoute = routes[routes.length - 2];
+            if (previousRoute == null || previousRoute.name !== 'Home') {
+                props.navigation.dispatch(
+                    CommonActions.reset({
+                        index: 0,
+                        routes: [
+                            { name: 'ProximasVacinas' },
+                        ],
+                    })
+                );
+                return true;
+            }
+            return false;
+        };
+
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+        return () => backHandler.remove();
+    }, []);
 
     const validateForm = () => {
         if (!nomeVacina || nomeVacina.length === 0 || dose == null || image == null || dataVacinacao == null || (proximaVacinacao == null && [2, 3].includes(dose))) {

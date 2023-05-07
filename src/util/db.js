@@ -1,9 +1,7 @@
 let loggedInUserEmail = 'allan';
 let nextId = 0;
 
-const users = [
-    { email: 'allan', password: '123', vaccines: [], id: 0 }
-];
+const users = [];
 
 const loginUser = (email, password) => {
     const user = users.find(user => user.email === email && user.password === password);
@@ -76,8 +74,8 @@ const getVaccines = () => {
     return users.find(user => user.email === loggedInUserEmail).vaccines;
 }
 
-const getCurrentUserEmail = () => {
-    return loggedInUserEmail;
+const getCurrentUserName = () => {
+    return users.find(user => user.email === loggedInUserEmail).name;
 }
 
-module.exports = { loginUser, saveVaccine, getVaccines, deleteVaccine, getCurrentUserEmail, getNextVaccines, registerUser, logOut, getUser, updateUser };
+module.exports = { loginUser, saveVaccine, getVaccines, deleteVaccine, getCurrentUserName, getNextVaccines, registerUser, logOut, getUser, updateUser };

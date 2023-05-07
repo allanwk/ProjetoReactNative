@@ -119,8 +119,9 @@ export default function Register(props) {
 const styles = StyleSheet.create({
     formContainer: {
         padding: 20,
-        marginTop: 200,
-        flex: 1
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center'
     },
     formRow: {
         flexDirection: 'row',
