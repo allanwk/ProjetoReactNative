@@ -24,10 +24,15 @@ export default function Button(props) {
         alignSelf: 'center'
     };
 
+    const defaultButtonTextStyle = {
+        textAlign: 'center',
+        fontFamily: 'AveriaLibre-Regular'
+    }
+
     return (
         <TouchableOpacity onPress={props.onPress} style={StyleSheet.compose(style, props.style)}>
             {props.delete ? <Image source={require('../assets/trash.png')} style={{ width: 20, height: 20 }} /> : null}
-            <Text style={{ textAlign: 'center', fontFamily: 'AveriaLibre-Regular', }}>{props.text}</Text>
+            <Text style={StyleSheet.compose(defaultButtonTextStyle, props.textStyle)}>{props.text}</Text>
         </TouchableOpacity>
     )
 }

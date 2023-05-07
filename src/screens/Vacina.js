@@ -154,8 +154,8 @@ export default function Vacina(props) {
                     <View style={styles.deleteDialog}>
                         <Text style={styles.deleteDialogText}>Tem certeza que deseja remover essa vacina?</Text>
                         <View style={styles.deleteDialogButtons}>
-                            <Button text="SIM" color="danger" onPress={confirmDeleteVaccine} flex={1} width={110} />
-                            <Button text="CANCELAR" color="action" onPress={() => setDeleteDialog(false)} width={110} />
+                            <Button text="SIM" color="danger" onPress={confirmDeleteVaccine} width={110} textStyle={{ width: '100%' }} />
+                            <Button text="CANCELAR" color="action" onPress={() => setDeleteDialog(false)} width={110} textStyle={{ width: '100%' }} />
                         </View>
                     </View>
                 </View>
