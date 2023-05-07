@@ -7,6 +7,13 @@ export default function ForgotPassword(props) {
     const [email, setEmail] = useState("");
     const [errorMessage, setErrorMessage] = useState(null);
 
+    function validateForm() {
+        if (!email || email.length === 0) {
+            return setErrorMessage("Preencha o campo e-mail para recuperar a senha!")
+        }
+        recoverPassword();
+    }
+
     function recoverPassword() {
         const user = getUser(email);
         if (user) {
@@ -35,7 +42,7 @@ export default function ForgotPassword(props) {
                     </View> : null
                 }
             </View>
-            <Button style={{ marginBottom: 40 }} text="Recuperar senha" color="success" onPress={recoverPassword} />
+            <Button style={{ marginBottom: 40 }} text="Recuperar senha" color="success" onPress={validateForm} />
         </View >
     )
 }

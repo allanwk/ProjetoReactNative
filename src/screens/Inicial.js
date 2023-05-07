@@ -25,6 +25,13 @@ export default function Inicial(props) {
         setPassword(text);
     };
 
+    const validateForm = () => {
+        if (!email || email.length === 0 || !password || password.length === 0) {
+            return setErrorMessage("E-mail e senha são obrigatórios!")
+        }
+        handleLogin();
+    }
+
     const handleLogin = () => {
         const error = loginUser(email, password);
         if (error) {
@@ -90,7 +97,7 @@ export default function Inicial(props) {
                         }
                     </View>
                     <View style={styles.buttonsContainer}>
-                        <Button style={{ marginBottom: 20 }} color='success' text='Entrar' onPress={handleLogin} />
+                        <Button style={{ marginBottom: 20 }} color='success' text='Entrar' onPress={validateForm} />
                         <Button style={{ marginBottom: 20 }} color='action' text='Criar minha conta' onPress={navigateToRegister} />
                         <Button text='Esqueci minha senha' onPress={navigateToForgotPassword} />
                     </View>

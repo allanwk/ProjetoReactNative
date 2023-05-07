@@ -32,6 +32,13 @@ export default function Register(props) {
         }
     }, [props.route]);
 
+    const validateForm = () => {
+        if (!email || email.length === 0 || !password || password.length === 0 || !birthDate || sex == null || !repeatPassword) {
+            return setErrorMessage("Todos os campos são obrigatórios!")
+        }
+        register();
+    }
+
     function register() {
         if (password !== repeatPassword) {
             return setErrorMessage("Senha não confere!");
@@ -104,7 +111,7 @@ export default function Register(props) {
                     </View> : null
                 }
             </View>
-            <Button style={{ marginBottom: 40 }} text="Cadastrar" color="success" onPress={register} />
+            <Button style={{ marginBottom: 40 }} text="Cadastrar" color="success" onPress={validateForm} />
         </View >
     )
 }

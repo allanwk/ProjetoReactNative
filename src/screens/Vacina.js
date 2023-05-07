@@ -15,6 +15,7 @@ export default function Vacina(props) {
     const [dose, setDose] = useState(0);
     const [id, setId] = useState(null);
     const [deleteDialog, setDeleteDialog] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     function parseLocaleDateString(dateString) {
         return dateString ? new Date(dateString.split('/').reverse().join('-') + 'T00:00:00') : null
@@ -31,6 +32,13 @@ export default function Vacina(props) {
             setId(params.id);
         }
     }, [props.route]);
+
+    const validateForm = () => {
+        if (!nomeVacina || nomeVacina.length === 0 || dose == null || image == null || dataVacinacao == null || (proximaVacinacao == null && [2, 3].includes(dose))) {
+            return setErrorMessage("Preencha todos os campos e anexe uma imagem para salvar a vacina!")
+        }
+        handleSaveVaccine();
+    }
 
     function handleSaveVaccine() {
         const vaccine = {
@@ -119,15 +127,21 @@ export default function Vacina(props) {
                         </View>
                         : null
                 }
+                {errorMessage ?
+                    <View style={styles.formRow}>
+                        <Text style={styles.formLabel}></Text>
+                        <Text style={styles.errorText}>{errorMessage}</Text>
+                    </View> : null
+                }
             </View>
             <View style={styles.buttonsContainer}>
                 {id != null ?
                     <>
-                        <Button color='success' text='Salvar alterações' onPress={handleSaveVaccine} />
+                        <Button color='success' text='Salvar alterações' onPress={validateForm} />
                         <Button delete color='danger' text='Excluir' onPress={() => setDeleteDialog(true)} />
                     </>
                     :
-                    <Button color='success' text='Cadastrar' onPress={handleSaveVaccine} />
+                    <Button color='success' text='Cadastrar' onPress={validateForm} />
                 }
             </View>
             <Modal
@@ -217,5 +231,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         paddingHorizontal: 20
+    },
+    errorText: {
+        color: '#FD7979',
+        fontFamily: 'AveriaLibre-Regular',
+        flex: 1
     }
 })
