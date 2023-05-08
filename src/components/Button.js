@@ -26,7 +26,8 @@ export default function Button(props) {
 
     const defaultButtonTextStyle = {
         textAlign: 'center',
-        fontFamily: 'AveriaLibre-Regular'
+        fontFamily: 'AveriaLibre-Regular',
+        color: 'white'
     }
 
     return (
