@@ -1,4 +1,4 @@
-let loggedInUserEmail = 'allan';
+let loggedInUserEmail = null;
 let nextVaccineId = 0;
 let nextUserId = 0;
 
