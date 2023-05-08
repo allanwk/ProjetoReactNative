@@ -1,5 +1,6 @@
 let loggedInUserEmail = 'allan';
-let nextId = 0;
+let nextVaccineId = 0;
+let nextUserId = 0;
 
 const users = [];
 
@@ -24,6 +25,8 @@ const registerUser = (newUser) => {
     if (users.find(user => user.email === newUser.email)) {
         return "E-mail já utilizado!";
     }
+    newUser.id = nextUserId;
+    nextUserId += 1;
     users.push(newUser);
     loginUser(newUser.email, newUser.password);
 }
@@ -34,8 +37,8 @@ const logOut = () => {
 
 const saveVaccine = (vaccine) => {
     if (vaccine.id == null) {
-        vaccine.id = nextId;
-        nextId += 1;
+        vaccine.id = nextVaccineId;
+        nextVaccineId += 1;
         users.find(user => user.email === loggedInUserEmail).vaccines.push(vaccine);
     } else {
         const vacinas = users.find(user => user.email === loggedInUserEmail).vaccines;

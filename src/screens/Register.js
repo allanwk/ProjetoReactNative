@@ -45,6 +45,7 @@ export default function Register(props) {
         }
         const user = { name, sex, birthDate: birthDate ? birthDate.toLocaleDateString('pt-BR') : null, email, password, vaccines };
         let error;
+        console.log(id);
         if (id != null) {
             user.id = id;
             error = updateUser(user);
