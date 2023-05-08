@@ -17,6 +17,9 @@ const getUser = (email) => {
 }
 
 const updateUser = (updatedUser) => {
+    if (users.find(user => user.email === updatedUser.email && user.id !== updatedUser.id)) {
+        return "E-mail já utilizado!";
+    }
     const index = users.findIndex(u => parseInt(u.id) === parseInt(updatedUser.id));
     users[index] = { ...updatedUser };
 }
@@ -78,7 +81,8 @@ const getVaccines = () => {
 }
 
 const getCurrentUserName = () => {
-    return users.find(user => user.email === loggedInUserEmail).name;
+    const user = users.find(user => user.email === loggedInUserEmail);
+    return user ? user.name : null;
 }
 
 module.exports = { loginUser, saveVaccine, getVaccines, deleteVaccine, getCurrentUserName, getNextVaccines, registerUser, logOut, getUser, updateUser };
