@@ -4,6 +4,8 @@ import VaccineCard from '../components/VaccineCard';
 import { StackActions } from '@react-navigation/native';
 import { getVaccines } from '../util/db';
 import React, { useState, useEffect } from 'react';
+import { onSnapshot, query, collection } from 'firebase/firestore';
+import { db } from '../firebase/config'
 
 export default function Home(props) {
     const [vaccines, setVaccines] = useState([]);
@@ -17,8 +19,12 @@ export default function Home(props) {
         props.navigation.navigate('Vacina', vaccine)
     }
 
+    const q = query(collection(db, "vacinas"));
     useEffect(() => {
-        setVaccines(getVaccines());
+        // setVaccines(getVaccines());
+        onSnapshot(q, (result) => {
+            console.log(result);
+        })
     }, []);
 
     return (

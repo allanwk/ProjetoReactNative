@@ -6,6 +6,8 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import { saveVaccine, deleteVaccine } from '../util/db';
 import Button from '../components/Button';
 import { CommonActions, useNavigation, useNavigationState } from '@react-navigation/native';
+import { db } from '../firebase/config';
+import { addDoc, collection } from 'firebase/firestore';
 
 
 export default function Vacina(props) {
@@ -66,7 +68,7 @@ export default function Vacina(props) {
         handleSaveVaccine();
     }
 
-    function handleSaveVaccine() {
+    async function handleSaveVaccine() {
         const vaccine = {
             dataVacinacao: dataVacinacao ? dataVacinacao.toLocaleDateString('pt-BR') : null,
             proximaVacinacao: proximaVacinacao ? proximaVacinacao.toLocaleDateString('pt-BR') : null,
@@ -83,7 +85,14 @@ export default function Vacina(props) {
             vaccine.id = id;
         }
 
-        saveVaccine(vaccine);
+        try {
+            await addDoc(collection(db, "vacinas"), vaccine);
+        } catch (e) {
+            console.error(e);
+            return;
+        }
+
+        // saveVaccine(vaccine);
         navigateToHome();
     }
 

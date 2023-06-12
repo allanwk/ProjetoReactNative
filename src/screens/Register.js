@@ -4,6 +4,8 @@ import DatePicker from '../components/DatePicker';
 import RadioButtonGroup from '../components/RadioButtonGroup';
 import Button from '../components/Button';
 import { registerUser, updateUser } from '../util/db';
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { auth_mod } from '../firebase/config'
 
 export default function Register(props) {
     const [name, setName] = useState("");
@@ -39,25 +41,31 @@ export default function Register(props) {
         register();
     }
 
-    function register() {
+    async function register() {
         if (password !== repeatPassword) {
             return setErrorMessage("Senha não confere!");
         }
         const user = { name, sex, birthDate: birthDate ? birthDate.toLocaleDateString('pt-BR') : null, email, password, vaccines };
         let error;
-        console.log(id);
         if (id != null) {
             user.id = id;
             error = updateUser(user);
         } else {
-            error = registerUser(user);
+            try {
+                let creds = await createUserWithEmailAndPassword(auth_mod, email, password);
+                console.log(creds);
+            } catch (e) {
+                console.error(e);
+                return;
+            }
+            // error = registerUser(user);
         }
 
-        if (error) {
-            return setErrorMessage(error);
-        }
+        // if (error) {
+        //     return setErrorMessage(error);
+        // }
 
-        id == null ? props.navigation.navigate('Drawer') : props.navigation.navigate('Inicial');
+        // id == null ? props.navigation.navigate('Drawer') : props.navigation.navigate('Inicial');
     }
 
     return (

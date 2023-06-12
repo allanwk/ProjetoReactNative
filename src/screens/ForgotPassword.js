@@ -2,6 +2,8 @@ import { View, Text, TextInput, StyleSheet } from 'react-native';
 import React, { useState } from 'react';
 import Button from '../components/Button';
 import { getUser } from '../util/db';
+import { sendPasswordResetEmail } from 'firebase/auth'
+import { auth_mod } from '../firebase/config'
 
 export default function ForgotPassword(props) {
     const [email, setEmail] = useState("");
@@ -15,13 +17,18 @@ export default function ForgotPassword(props) {
     }
 
     function recoverPassword() {
-        const user = getUser(email);
-        if (user) {
-            props.navigation.navigate('Register', user);
-            setErrorMessage(null);
-        } else {
-            setErrorMessage("Usuário não existe!");
+        try {
+            sendPasswordResetEmail(auth_mod, email);
+        } catch (e) {
+            console.error(e);
         }
+        // const user = getUser(email);
+        // if (user) {
+        //     props.navigation.navigate('Register', user);
+        //     setErrorMessage(null);
+        // } else {
+        //     setErrorMessage("Usuário não existe!");
+        // }
     }
 
     return (

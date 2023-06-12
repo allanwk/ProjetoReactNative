@@ -11,6 +11,8 @@ import {
 import { loginUser } from '../util/db.js';
 import Button from '../components/Button';
 import LinearGradient from 'react-native-linear-gradient';
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth_mod } from '../firebase/config'
 
 export default function Inicial(props) {
     const [email, setEmail] = useState('');
@@ -32,11 +34,18 @@ export default function Inicial(props) {
         handleLogin();
     }
 
-    const handleLogin = () => {
-        const error = loginUser(email, password);
-        if (error) {
-            return setErrorMessage(error);
+    const handleLogin = async () => {
+        try {
+            let creds = await signInWithEmailAndPassword(auth_mod, email, password);
+
+        } catch (e) {
+            console.error(e);
+            return;
         }
+        // const error = loginUser(email, password);
+        // if (error) {
+        //     return setErrorMessage(error);
+        // }
         props.navigation.navigate("Drawer");
         setEmail('');
         setPassword('');
