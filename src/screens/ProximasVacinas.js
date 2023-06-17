@@ -1,13 +1,43 @@
 import { View, SafeAreaView, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { getNextVaccines } from '../util/db';
 import Button from '../components/Button';
+import { storage, db } from '../firebase/config';
+import { onSnapshot, query, collection, where } from 'firebase/firestore';
+import { getDownloadURL, ref } from 'firebase/storage';
+import { useSelector, useDispatch } from 'react-redux';
+import { setId } from '../redux/vacinaSlice';
 
 export default function ProximasVacinas(props) {
     const [vaccines, setVaccines] = useState([]);
+    const dispatch = useDispatch();
 
+    const userId = useSelector(state => state.login.id);
+    const today = new Date().setHours(0, 0, 0, 0);
+    const q = query(collection(db, "vacinas"), where("userId", "==", userId));
     useEffect(() => {
-        setVaccines(getNextVaccines());
+        onSnapshot(q, async (result) => {
+            const nextVaccines = result.docs.filter(doc => {
+                const proximaVacinacao = new Date(doc.data().proximaVacinacao.split('/').reverse().join('-') + 'T00:00:00')
+                return proximaVacinacao >= today;
+            })
+
+            const processedVaccines = nextVaccines.map((doc) => {
+                const v = { ...doc.data(), id: doc.id };
+                return v;
+            });
+
+            processedVaccines.sort((a, b) => {
+                const date_a = new Date(a.proximaVacinacao.split('/').reverse().join('-') + 'T00:00:00')
+                const date_b = new Date(b.proximaVacinacao.split('/').reverse().join('-') + 'T00:00:00')
+                if (date_a > date_b) {
+                    return 1;
+                } else if (date_a < date_b) {
+                    return -1;
+                }
+                return 0;
+            })
+            setVaccines(processedVaccines);
+        })
     }, []);
 
     function navigateToVaccineScreen() {
@@ -15,7 +45,8 @@ export default function ProximasVacinas(props) {
     }
 
     function openVaccine(vaccine) {
-        props.navigation.navigate('HomeStack', { screen: 'Vacina', params: vaccine })
+        dispatch(setId({ id: vaccine.id }))
+        props.navigation.navigate('HomeStack', { screen: 'Vacina' })
     }
 
     return (

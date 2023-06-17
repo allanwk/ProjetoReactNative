@@ -1,25 +1,32 @@
-import { View, Text, TextInput, StyleSheet, Image, Modal, BackHandler } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, Modal, BackHandler, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import RadioButtonGroup from '../components/RadioButtonGroup';
 import DatePicker from '../components/DatePicker';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { saveVaccine, deleteVaccine } from '../util/db';
 import Button from '../components/Button';
 import { CommonActions, useNavigation, useNavigationState } from '@react-navigation/native';
-import { db } from '../firebase/config';
-import { addDoc, collection } from 'firebase/firestore';
+import { db, storage } from '../firebase/config';
+import { onSnapshot, query, collection, where, addDoc, getDocs, doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
+import { useSelector } from 'react-redux';
+import { uploadBytes, ref, getDownloadURL, deleteObject } from 'firebase/storage';
 
+import { v4 as uuid } from 'uuid';
 
 export default function Vacina(props) {
     const [dataVacinacao, setDataVacinacao] = useState(new Date());
     const [proximaVacinacao, setProximaVacinacao] = useState(new Date());
     const [nomeVacina, setNomeVacina] = useState("");
     const [image, setImage] = useState(null);
+    const [imageId, setImageId] = useState(null);
     const [dose, setDose] = useState(0);
     const [id, setId] = useState(null);
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [waitingFirebase, setWaitingFirebase] = useState(false);
 
+    const userId = useSelector(state => state.login.id);
+    const vaccineId = useSelector(state => state.vacina.id);
     const navigation = useNavigation();
     const routes = useNavigationState((state) => state.routes);
 
@@ -28,16 +35,30 @@ export default function Vacina(props) {
     }
 
     useEffect(() => {
-        const { params } = props.route;
-        if (params) {
-            setDataVacinacao(params.dataVacinacao ? parseLocaleDateString(params.dataVacinacao) : new Date());
-            setProximaVacinacao(params.proximaVacinacao ? parseLocaleDateString(params.proximaVacinacao) : new Date());
-            setNomeVacina(params.nomeVacina);
-            setImage(params.image);
-            setDose(params.dose);
-            setId(params.id);
+        const consultaDadosVacina = async function () {
+            setLoading(true);
+            const docRef = doc(db, "vacinas", vaccineId);
+            const d = await getDoc(docRef);
+            const vacina = d.data();
+
+            setDataVacinacao(vacina.dataVacinacao ? parseLocaleDateString(vacina.dataVacinacao) : new Date());
+            setProximaVacinacao(vacina.proximaVacinacao ? parseLocaleDateString(vacina.proximaVacinacao) : new Date());
+            setNomeVacina(vacina.nomeVacina);
+            setImageId(vacina.imageId);
+            setDose(vacina.dose);
+            setId(d.id);
+
+            const imageRef = ref(storage, buildImagePath(vacina.imageId));
+            const url = await getDownloadURL(imageRef);
+            if (url) {
+                setImage(url);
+            }
+            setLoading(false);
         }
-    }, [props.route]);
+        if (vaccineId != null) {
+            consultaDadosVacina();
+        }
+    }, [vaccineId]);
 
     useEffect(() => {
         const backAction = () => {
@@ -68,32 +89,54 @@ export default function Vacina(props) {
         handleSaveVaccine();
     }
 
+    function buildImagePath(uuid) {
+        const firestorageImagesDir = "images/";
+        return firestorageImagesDir + uuid;
+    }
+
     async function handleSaveVaccine() {
+        if (waitingFirebase) {
+            return;
+        }
+
+        if (userId == null) {
+            console.error("Usuário não logado");
+            return;
+        }
+
         const vaccine = {
             dataVacinacao: dataVacinacao ? dataVacinacao.toLocaleDateString('pt-BR') : null,
             proximaVacinacao: proximaVacinacao ? proximaVacinacao.toLocaleDateString('pt-BR') : null,
             nomeVacina,
-            image,
-            dose
+            imageId,
+            dose,
+            userId
         }
         //3a. dose ou dose única não tem próxima dose
         if ([2, 3].includes(dose)) {
             delete vaccine.proximaVacinacao;
         }
 
-        if (id != null) {
-            vaccine.id = id;
-        }
-
         try {
-            await addDoc(collection(db, "vacinas"), vaccine);
+            setWaitingFirebase(true);
+            if (id == null) {
+                vaccine.imageId = uuid();
+                await addDoc(collection(db, "vacinas"), vaccine);
+            } else {
+                await setDoc(doc(db, "vacinas", id), vaccine);
+            }
+            const imagePath = buildImagePath(vaccine.imageId);
+            const imageRef = ref(storage, imagePath);
+            const file = await fetch(image);
+            const blob = await file.blob();
+            await uploadBytes(imageRef, blob, { contentType: 'image/jpeg' });
         } catch (e) {
+            setWaitingFirebase(false);
             console.error(e);
             return;
         }
-
-        // saveVaccine(vaccine);
         navigateToHome();
+        setWaitingFirebase(false);
     }
 
     function navigateToHome() {
@@ -107,10 +150,24 @@ export default function Vacina(props) {
         );
     }
 
-    function confirmDeleteVaccine() {
+    async function confirmDeleteVaccine() {
+        if (waitingFirebase) {
+            return;
+        }
+
         if (id != null) {
-            deleteVaccine(id);
-            navigateToHome();
+            try {
+                setWaitingFirebase(true);
+                await deleteDoc(doc(db, "vacinas", id))
+                if (imageId) {
+                    await deleteObject(ref(storage, buildImagePath(imageId)))
+                }
+                navigateToHome();
+            } catch (e) {
+                console.error("Erro ao excluir vacina: ", e);
+            } finally {
+                setWaitingFirebase(false);
+            }
         }
     }
 
@@ -127,6 +184,14 @@ export default function Vacina(props) {
             includeBase64: false,
         }, imagePickerCallback);
     };
+
+    if (loading) {
+        return (
+            <View style={{ flex: 1, backgroundColor: '#ADD4D0' }} >
+                <ActivityIndicator size="large" color="white" style={{ flex: 1 }} />
+            </View>
+        );
+    }
 
     return (
         <View style={{ flex: 1, backgroundColor: '#ADD4D0' }}>
@@ -172,11 +237,11 @@ export default function Vacina(props) {
             <View style={styles.buttonsContainer}>
                 {id != null ?
                     <>
-                        <Button color='success' text='Salvar alterações' onPress={validateForm} />
-                        <Button delete color='danger' text='Excluir' onPress={() => setDeleteDialog(true)} />
+                        <Button color='success' text='Salvar alterações' onPress={validateForm} loading={waitingFirebase} />
+                        <Button delete color='danger' text='Excluir' onPress={() => setDeleteDialog(true)} loading={waitingFirebase} />
                     </>
                     :
-                    <Button color='success' text='Cadastrar' onPress={validateForm} />
+                    <Button color='success' text='Cadastrar' onPress={validateForm} loading={waitingFirebase} />
                 }
             </View>
             <Modal
@@ -189,7 +254,7 @@ export default function Vacina(props) {
                     <View style={styles.deleteDialog}>
                         <Text style={styles.deleteDialogText}>Tem certeza que deseja remover essa vacina?</Text>
                         <View style={styles.deleteDialogButtons}>
-                            <Button text="SIM" color="danger" onPress={confirmDeleteVaccine} width={110} textStyle={{ width: '100%' }} />
+                            <Button text="SIM" color="danger" onPress={confirmDeleteVaccine} width={110} textStyle={{ width: '100%' }} loading={waitingFirebase} />
                             <Button text="CANCELAR" color="action" onPress={() => setDeleteDialog(false)} width={110} textStyle={{ width: '100%' }} />
                         </View>
                     </View>

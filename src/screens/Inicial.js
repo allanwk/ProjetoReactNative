@@ -13,11 +13,19 @@ import Button from '../components/Button';
 import LinearGradient from 'react-native-linear-gradient';
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth_mod } from '../firebase/config'
+import { useDispatch } from 'react-redux';
+import { setUserId, setUserdata } from '../redux/loginSlice.js';
+
+import { db } from '../firebase/config'
+import { addDoc, collection, query, where, getDocs } from 'firebase/firestore';
 
 export default function Inicial(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const dispatch = useDispatch();
 
     const handleEmailChange = (text) => {
         setEmail(text);
@@ -35,21 +43,33 @@ export default function Inicial(props) {
     }
 
     const handleLogin = async () => {
-        try {
-            let creds = await signInWithEmailAndPassword(auth_mod, email, password);
-
-        } catch (e) {
-            console.error(e);
+        if (loading) {
             return;
         }
-        // const error = loginUser(email, password);
-        // if (error) {
-        //     return setErrorMessage(error);
-        // }
+
+        let creds;
+        try {
+            setLoading(true);
+            creds = await signInWithEmailAndPassword(auth_mod, email, password);
+        } catch (e) {
+            setLoading(false);
+            setErrorMessage("E-mail e/ou senha inválidos.");
+            console.log("Erro ao fazer login: ", e);
+            return;
+        }
+        const q = query(collection(db, "usuarios"), where("id", "==", creds.user.uid));
+        const docs = (await getDocs(q)).docs;
+        if (docs && docs[0]) {
+            const name = docs[0].data().name;
+            dispatch(setUserdata({ name }));
+        }
+
+        dispatch(setUserId({ id: creds.user.uid }))
         props.navigation.navigate("Drawer");
         setEmail('');
         setPassword('');
         setErrorMessage(null);
+        setLoading(false);
     }
 
     const navigateToRegister = () => {
@@ -96,6 +116,7 @@ export default function Inicial(props) {
                                 onChangeText={handlePasswordChange}
                                 value={password}
                                 secureTextEntry={true}
+                                autoCapitalize='none'
                             />
                         </View>
                         {errorMessage ?
@@ -106,7 +127,7 @@ export default function Inicial(props) {
                         }
                     </View>
                     <View style={styles.buttonsContainer}>
-                        <Button style={{ marginBottom: 20 }} color='success' text='Entrar' onPress={validateForm} />
+                        <Button style={{ marginBottom: 20 }} color='success' text='Entrar' onPress={validateForm} loading={loading} />
                         <Button style={{ marginBottom: 20 }} color='action' text='Criar minha conta' onPress={navigateToRegister} />
                         <Button text='Esqueci minha senha' onPress={navigateToForgotPassword} />
                     </View>

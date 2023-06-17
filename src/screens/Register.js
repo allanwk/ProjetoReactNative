@@ -5,7 +5,10 @@ import RadioButtonGroup from '../components/RadioButtonGroup';
 import Button from '../components/Button';
 import { registerUser, updateUser } from '../util/db';
 import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { auth_mod } from '../firebase/config'
+import { auth_mod, db } from '../firebase/config'
+import { addDoc, collection, onSnapshot, query, where } from 'firebase/firestore';
+import { useDispatch } from 'react-redux';
+import { setUserdata } from '../redux/loginSlice';
 
 export default function Register(props) {
     const [name, setName] = useState("");
@@ -15,24 +18,13 @@ export default function Register(props) {
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState(null);
-    const [vaccines, setVaccines] = useState([]);
-    const [id, setId] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const dispatch = useDispatch();
 
     function parseLocaleDateString(dateString) {
         return dateString ? new Date(dateString.split('/').reverse().join('-') + 'T00:00:00') : null
     }
-
-    useEffect(() => {
-        const { params } = props.route;
-        if (params) {
-            setName(params.name);
-            setSex(params.sex);
-            setBirthDate(params.birthDate ? parseLocaleDateString(params.birthDate) : new Date())
-            setEmail(params.email);
-            setVaccines(params.vaccines);
-            setId(params.id);
-        }
-    }, [props.route]);
 
     const validateForm = () => {
         if (!email || email.length === 0 || !password || password.length === 0 || !birthDate || sex == null || !repeatPassword) {
@@ -42,30 +34,48 @@ export default function Register(props) {
     }
 
     async function register() {
+        if (loading) {
+            return;
+        }
+
         if (password !== repeatPassword) {
             return setErrorMessage("Senha não confere!");
         }
-        const user = { name, sex, birthDate: birthDate ? birthDate.toLocaleDateString('pt-BR') : null, email, password, vaccines };
-        let error;
-        if (id != null) {
-            user.id = id;
-            error = updateUser(user);
-        } else {
-            try {
-                let creds = await createUserWithEmailAndPassword(auth_mod, email, password);
-                console.log(creds);
-            } catch (e) {
-                console.error(e);
-                return;
+        let creds;
+        try {
+            setLoading(true);
+            creds = await createUserWithEmailAndPassword(auth_mod, email, password);
+        } catch (e) {
+            setLoading(false);
+            console.log("Erro ao registrar usuário: ", e);
+            switch (e.code) {
+                case 'auth/email-already-in-use':
+                    setErrorMessage("E-mail já utilizado");
+                    return;
+                case 'auth/invalid-email':
+                    setErrorMessage('E-mail inválido');
+                    return;
+                case 'auth/weak-password':
+                    setErrorMessage('Senha curta demais');
+                    return;
+                default:
+                    return;
             }
-            // error = registerUser(user);
         }
 
-        // if (error) {
-        //     return setErrorMessage(error);
-        // }
+        try {
+            const userDataObject = { name, sex, birthDate: birthDate ? birthDate.toLocaleDateString('pt-BR') : null, id: creds.user.uid };
+            await addDoc(collection(db, "usuarios"), userDataObject);
+        } catch (e) {
+            setLoading(false);
+            console.log("Erro ao salvar documento do usuário: ", e);
+            return;
+        }
 
-        // id == null ? props.navigation.navigate('Drawer') : props.navigation.navigate('Inicial');
+        dispatch(setUserdata({ name }));
+        dispatch(setUserId({ id: creds.user.uid }))
+        props.navigation.navigate('Drawer');
+        setLoading(false);
     }
 
     return (
@@ -93,6 +103,7 @@ export default function Register(props) {
                         style={styles.formInput}
                         value={email}
                         onChangeText={setEmail}
+                        autoCapitalize='none'
                     />
                 </View>
                 <View style={styles.formRow}>
@@ -102,6 +113,7 @@ export default function Register(props) {
                         value={password}
                         onChangeText={setPassword}
                         secureTextEntry={true}
+                        autoCapitalize='none'
                     />
                 </View>
                 <View style={styles.formRow}>
@@ -111,6 +123,7 @@ export default function Register(props) {
                         value={repeatPassword}
                         onChangeText={setRepeatPassword}
                         secureTextEntry={true}
+                        autoCapitalize='none'
                     />
                 </View>
                 {errorMessage ?
@@ -120,7 +133,7 @@ export default function Register(props) {
                     </View> : null
                 }
             </View>
-            <Button style={{ marginBottom: 40 }} text="Cadastrar" color="success" onPress={validateForm} />
+            <Button style={{ marginBottom: 40 }} text="Cadastrar" color="success" onPress={validateForm} loading={loading} />
         </View >
     )
 }

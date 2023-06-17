@@ -2,6 +2,7 @@ import { DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navi
 import { View, Text, StyleSheet, Image } from 'react-native'
 import { getCurrentUserName, logOut } from '../util/db';
 import { StackActions, CommonActions } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 const CustomComponent = (props) => {
     function navigateToLogin() {
@@ -12,11 +13,12 @@ const CustomComponent = (props) => {
             ]
         }))
     }
+    const name = useSelector(state => state.login.name);
 
     return (
         <DrawerContentScrollView style={styles.drawer}>
             <View style={{ alignItems: 'center' }}>
-                <Text style={{ color: '#419ED7', alignSelf: 'center', marginTop: 50, fontFamily: 'AveriaLibre-Regular' }}>{"Olá " + getCurrentUserName()}</Text>
+                <Text style={{ color: '#419ED7', alignSelf: 'center', marginTop: 50, fontFamily: 'AveriaLibre-Regular' }}>{"Olá " + name}</Text>
                 <View style={styles.separator} />
             </View>
             <DrawerItemList {...props} />

@@ -1,4 +1,4 @@
-import { TouchableOpacity, Text, StyleSheet, Image } from "react-native"
+import { TouchableOpacity, Text, StyleSheet, Image, ActivityIndicator } from "react-native"
 
 export default function Button(props) {
     const color = props.color === 'success' ? '#37BD6D' :
@@ -30,10 +30,20 @@ export default function Button(props) {
         color: 'white'
     }
 
+    const handleButtonPress = function () {
+        if (!props.loading) {
+            props.onPress();
+        }
+    }
+
     return (
-        <TouchableOpacity onPress={props.onPress} style={StyleSheet.compose(style, props.style)}>
+        <TouchableOpacity onPress={handleButtonPress} style={StyleSheet.compose(style, props.style)}>
             {props.delete ? <Image source={require('../assets/trash.png')} style={{ width: 20, height: 20 }} /> : null}
-            <Text style={StyleSheet.compose(defaultButtonTextStyle, props.textStyle)}>{props.text}</Text>
+            {!props.loading ?
+                <Text style={StyleSheet.compose(defaultButtonTextStyle, props.textStyle)}>{props.text}</Text>
+                :
+                <ActivityIndicator color="#fff" />
+            }
         </TouchableOpacity>
     )
 }

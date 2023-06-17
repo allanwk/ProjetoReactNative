@@ -1,13 +1,14 @@
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 import React, { useState } from 'react';
 import Button from '../components/Button';
-import { getUser } from '../util/db';
 import { sendPasswordResetEmail } from 'firebase/auth'
 import { auth_mod } from '../firebase/config'
 
 export default function ForgotPassword(props) {
     const [email, setEmail] = useState("");
     const [errorMessage, setErrorMessage] = useState(null);
+    const [message, setMessage] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     function validateForm() {
         if (!email || email.length === 0) {
@@ -16,19 +17,19 @@ export default function ForgotPassword(props) {
         recoverPassword();
     }
 
-    function recoverPassword() {
+    async function recoverPassword() {
+        setErrorMessage(null);
+        setMessage(null);
         try {
-            sendPasswordResetEmail(auth_mod, email);
+            setLoading(true);
+            await sendPasswordResetEmail(auth_mod, email);
+            setMessage("E-mail de recuperação enviado!");
         } catch (e) {
-            console.error(e);
+            setErrorMessage("Usuário não encontrado");
+            console.log("Erro ao enviar email de recuperação de senha: ", e);
+        } finally {
+            setLoading(false);
         }
-        // const user = getUser(email);
-        // if (user) {
-        //     props.navigation.navigate('Register', user);
-        //     setErrorMessage(null);
-        // } else {
-        //     setErrorMessage("Usuário não existe!");
-        // }
     }
 
     return (
@@ -40,6 +41,7 @@ export default function ForgotPassword(props) {
                         style={styles.formInput}
                         value={email}
                         onChangeText={setEmail}
+                        autoCapitalize='none'
                     />
                 </View>
                 {errorMessage ?
@@ -48,8 +50,14 @@ export default function ForgotPassword(props) {
                         <Text style={styles.errorText}>{errorMessage}</Text>
                     </View> : null
                 }
+                {message ?
+                    <View style={styles.formRow}>
+                        <Text style={styles.formLabel}></Text>
+                        <Text style={styles.messageText}>{message}</Text>
+                    </View> : null
+                }
             </View>
-            <Button style={{ marginBottom: 40 }} text="Recuperar senha" color="success" onPress={validateForm} />
+            <Button style={{ marginBottom: 40 }} text="Recuperar senha" color="success" onPress={validateForm} loading={loading} />
         </View >
     )
 }
@@ -96,6 +104,10 @@ const styles = StyleSheet.create({
     },
     errorText: {
         color: '#FD7979',
+        fontFamily: 'AveriaLibre-Regular'
+    },
+    messageText: {
+        color: '#fff',
         fontFamily: 'AveriaLibre-Regular'
     }
 })
