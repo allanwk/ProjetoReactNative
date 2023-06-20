@@ -2,9 +2,12 @@ import { DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navi
 import { View, Text, StyleSheet, Image } from 'react-native'
 import { getCurrentUserName, logOut } from '../util/db';
 import { StackActions, CommonActions } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUserId } from '../redux/loginSlice';
+import { setId } from '../redux/vacinaSlice';
 
 const CustomComponent = (props) => {
+    const dispatch = useDispatch();
     function navigateToLogin() {
         props.navigation.dispatch(CommonActions.reset({
             index: 0,
@@ -13,21 +16,24 @@ const CustomComponent = (props) => {
             ]
         }))
     }
+
+    function handleLogout() {
+        dispatch(setUserId({ id: null }));
+        dispatch(setId({ id: null }));
+        navigateToLogin();
+    }
     const name = useSelector(state => state.login.name);
 
     return (
         <DrawerContentScrollView style={styles.drawer}>
             <View style={{ alignItems: 'center' }}>
-                <Text style={{ color: '#419ED7', alignSelf: 'center', marginTop: 50, fontFamily: 'AveriaLibre-Regular' }}>{"Olá " + name}</Text>
+                <Text style={{ color: '#419ED7', alignSelf: 'center', marginTop: 50, fontFamily: 'AveriaLibre-Regular', fontSize: 20 }}>{"Olá " + name}</Text>
                 <View style={styles.separator} />
             </View>
-            <DrawerItemList {...props} />
-            <DrawerItem label="Sair" onPress={() => {
-                logOut();
-                navigateToLogin();
-            }}
+            <DrawerItemList {...props} labelStyle={{ fontSize: 20 }} />
+            <DrawerItem label="Sair" onPress={handleLogout}
                 icon={() => <Image source={require('../assets/sair.png')} style={{ width: 20, height: 20 }} />}
-                labelStyle={{ marginLeft: -25, color: '#419ED7', fontFamily: 'AveriaLibre-Regular' }}
+                labelStyle={{ marginLeft: -25, color: '#419ED7', fontFamily: 'AveriaLibre-Regular', fontSize: 20 }}
             />
         </DrawerContentScrollView>
     )

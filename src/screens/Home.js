@@ -58,15 +58,17 @@ export default function Home(props) {
         <View style={{ flex: 1, backgroundColor: '#ADD4D0' }}>
             {!loading ?
                 <>
-                    <View style={styles.searchContainer}>
-                        <Image source={require('../assets/search.png')} style={styles.icon} />
-                        <TextInput
-                            style={styles.searchInput}
-                            value={search}
-                            onChangeText={setSearch}
-                            placeholder="PESQUISAR VACINA..."
-                            placeholderTextColor="#8B8B8B"
-                        />
+                    <View style={styles.outterSearchContainer}>
+                        <View style={styles.searchContainer}>
+                            <Image source={require('../assets/search.png')} style={styles.icon} />
+                            <TextInput
+                                style={styles.searchInput}
+                                value={search}
+                                onChangeText={setSearch}
+                                placeholder="PESQUISAR VACINA..."
+                                placeholderTextColor="#8B8B8B"
+                            />
+                        </View>
                     </View>
                     <SafeAreaView style={{ flex: 1 }}>
                         <FlatList
@@ -100,6 +102,11 @@ const styles = StyleSheet.create({
         aspectRatio: 1,
         opacity: 0.4
     },
+    outterSearchContainer: {
+        paddingHorizontal: 20,
+        paddingTop: 25,
+        paddingBottom: 10,
+    },
     searchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -108,6 +115,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         color: '#419ED7',
         height: 40,
-        padding: 0,
+        paddingLeft: 10
     }
 })

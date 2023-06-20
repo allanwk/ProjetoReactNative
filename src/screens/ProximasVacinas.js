@@ -17,8 +17,12 @@ export default function ProximasVacinas(props) {
     useEffect(() => {
         onSnapshot(q, async (result) => {
             const nextVaccines = result.docs.filter(doc => {
-                const proximaVacinacao = new Date(doc.data().proximaVacinacao.split('/').reverse().join('-') + 'T00:00:00')
-                return proximaVacinacao >= today;
+                const { proximaVacinacao } = doc.data();
+                if (!proximaVacinacao) {
+                    return false;
+                }
+                const proximaVacinacaoDate = new Date(proximaVacinacao.split('/').reverse().join('-') + 'T00:00:00')
+                return proximaVacinacaoDate >= today;
             })
 
             const processedVaccines = nextVaccines.map((doc) => {

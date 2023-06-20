@@ -8,7 +8,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth'
 import { auth_mod, db } from '../firebase/config'
 import { addDoc, collection, onSnapshot, query, where } from 'firebase/firestore';
 import { useDispatch } from 'react-redux';
-import { setUserdata } from '../redux/loginSlice';
+import { setUserdata, setUserId } from '../redux/loginSlice';
 
 export default function Register(props) {
     const [name, setName] = useState("");
